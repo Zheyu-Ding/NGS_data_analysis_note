@@ -7,3 +7,6 @@ So far, the data analysis I have been involved in has primarily focused on trans
 
 ## **Project**
 1. Ribo-seq data analysis
+2. RNA-seq data analysis
+3. PAR-CLIP seq data analysis
+4. scRNA-seq data analysis
