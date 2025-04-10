@@ -9,17 +9,29 @@
 ### **00.rawdata, download**
 
 ```
-##activate your ribo-seq data analysis environment
+## activate your ribo-seq data analysis environment
 conda activate ribo
-##download raw date via fastq-dump
+## download raw date via fastq-dump
 nohup fastq-dump --gzip --split-3 --defline-qual '+' --defline-seq '@\$ac-\$si/\$ri'   SRR9047189 &
-##check data integrity
+## check data integrity
 cat nohup.out | grep Written
 ```
 
-### **01.beforeQC, quality control **
+### **01.beforeQC, quality control**
 
 ```
 ls 00.raw/*.gz | xargs fastqc -t 12 -o 01.beforeqc
 ```
 
+### **02.cutadapt, remove 3' end adapter**
+
+```
+workdir=/data-shared/linyy/ribo_GSE114882/02.cutadapt
+fastaFile=/data-shared/linyy/ribo_GSE114882/00.raw
+adapter=AGATCGGAAGAGCACACGTCT ##polyA:"A{10}"
+
+for i in SRR7214{386..401}; ## RPF
+do
+        nohup cutadapt -m 20 -M 40 --match-read-wildcards -a $adapter -o $workdir/$i.trimmed.fastq $fastaFile/$i.fastq.gz > $workdir/${i}_trimmed.log &
+done
+```
