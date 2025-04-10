@@ -7,6 +7,7 @@
 
 ## **Upstream Workflow of Ribosome Profiling Data**
 ### **00.rawdata, download**
+
 ```
 ##activate your ribo-seq data analysis environment
 conda activate ribo
@@ -15,3 +16,10 @@ nohup fastq-dump --gzip --split-3 --defline-qual '+' --defline-seq '@\$ac-\$si/\
 ##check data integrity
 cat nohup.out | grep Written
 ```
+
+### **01.beforeQC, quality control **
+
+```
+ls 00.raw/*.gz | xargs fastqc -t 12 -o 01.beforeqc
+```
+
