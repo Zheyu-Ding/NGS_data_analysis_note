@@ -44,6 +44,82 @@ fastaFile=/data-shared/linyy/ribo_GSE114882/02.cutadapt
 
 for i in SRR7214{386..401};
 do
-    nohup fastq_quality_filter -Q33 -v -q 25 -p 75 -i $fastaFile/$i.trimmed.fastq -o $workdir/$i.trimmed.Qfilter.fastq > $workdir/$i.Qfilter.log &
+        nohup fastq_quality_filter -Q33 -v -q 25 -p 75 -i $fastaFile/$i.trimmed.fastq -o $workdir/$i.trimmed.Qfilter.fastq > $workdir/$i.Qfilter.log &
 done
 ```
+
+### **04.afterqc, quality control**
+
+```
+ls 03.filter/*.fastq | xargs fastqc -t 12 -o 04.afterqc
+```
+
+### **05.contam, remove rRNA contamination**
+
+```
+bowtie_noncoding_index=/data-shared/linyy/reference/hg38/rRNA_bowtieIndex/human_rRNA
+fastqFile=/data-shared/linyy/ribo_GSE114882/03.filter
+workdir=/data-shared/linyy/ribo_GSE114882/05.contam
+
+for i in SRR7214{386..401};
+do
+      nohup bowtie -n 0 -y -a --norc --best --strata -S -p 1 -l 15 --un=$workdir/noncontam_$i.fastq \
+      -x $bowtie_noncoding_index -q $fastqFile/$i.trimmed.Qfilter.fastq $workdir/$i.alin > $i.log 2>&1 &
+done
+```
+
+### **06.afterQC, quality control**
+
+```
+ls 05.contam/*.fastq | xargs fastqc -t 12 -o 06.finalqc
+```
+
+### **07.STAR, mapping**
+
+```
+STAR_genome_index=/data-shared/linyy/reference/hg38/STAR_Human_Ensembl_hg38_39
+workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
+fastqFile=/data-shared/linyy/ribo_GSE114882/00.raw
+
+for i in SRR7214{386..401};
+do
+    mkdir -p $workdir/${i}_STAR
+    nohup STAR --outFilterType Normal --outWigNorm RPM --outWigStrand Stranded  \
+            --runThreadN 1 --outWigType wiggle  --alignEndsType EndToEnd  \
+            --outFilterMismatchNmax 2 --outFilterMultimapNmax 20 \
+            --outFilterMatchNmin 15 --outFilterMismatchNoverReadLmax 0.04 \
+            --genomeDir $STAR_genome_index \
+            --readFilesIn $fastqFile/$i.fastq.gz \
+            --outFileNamePrefix  $workdir/${i}_STAR/${i}. \
+            --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM GeneCounts \
+            --outSAMattributes All  --limitBAMsortRAM 5838160191 --readFilesCommand zcat &
+done
+```
+
+##sort only transcriptome.out.bam
+workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
+
+for i in SRR7214{386..401};
+do
+    nohup samtools sort -T $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam.temp \
+    -o $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam \
+    $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.bam &
+done
+
+##set index
+workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
+
+for i in SRR7214{386..401};
+do
+    nohup samtools index $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam &
+    nohup samtools index $workdir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam &
+done
+
+##bam2bigwig
+workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
+
+for i in SRR7214{386..401};
+do
+    nohup bamCoverage -b $workdir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam \
+    -o $workdir/${i}_STAR/$i.bw  --normalizeUsing CPM --binSize 1 -p 1 > $workdir/${i}_STAR/$i.bam2bw.log 2>&1 &
+done
