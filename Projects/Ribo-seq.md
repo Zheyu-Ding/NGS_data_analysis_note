@@ -94,9 +94,8 @@ do
             --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM GeneCounts \
             --outSAMattributes All  --limitBAMsortRAM 5838160191 --readFilesCommand zcat &
 done
-```
 
-##sort only transcriptome.out.bam
+## sort only transcriptome.out.bam
 workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
 
 for i in SRR7214{386..401};
@@ -106,7 +105,7 @@ do
     $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.bam &
 done
 
-##set index
+## set index
 workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
 
 for i in SRR7214{386..401};
@@ -115,7 +114,7 @@ do
     nohup samtools index $workdir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam &
 done
 
-##bam2bigwig
+## bam2bigwig
 workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
 
 for i in SRR7214{386..401};
@@ -123,3 +122,4 @@ do
     nohup bamCoverage -b $workdir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam \
     -o $workdir/${i}_STAR/$i.bw  --normalizeUsing CPM --binSize 1 -p 1 > $workdir/${i}_STAR/$i.bam2bw.log 2>&1 &
 done
+```
