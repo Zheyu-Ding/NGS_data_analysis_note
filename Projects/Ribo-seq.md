@@ -28,10 +28,22 @@ ls 00.raw/*.gz | xargs fastqc -t 12 -o 01.beforeqc
 ```
 workdir=/data-shared/linyy/ribo_GSE114882/02.cutadapt
 fastaFile=/data-shared/linyy/ribo_GSE114882/00.raw
-adapter=AGATCGGAAGAGCACACGTCT ##polyA:"A{10}"
+adapter=AGATCGGAAGAGCACACGTCT 
 
-for i in SRR7214{386..401}; ## RPF
+for i in SRR7214{386..401}; 
 do
         nohup cutadapt -m 20 -M 40 --match-read-wildcards -a $adapter -o $workdir/$i.trimmed.fastq $fastaFile/$i.fastq.gz > $workdir/${i}_trimmed.log &
+done
+```
+
+### **03.filter, remove reads with low quality**
+
+```
+workdir=/data-shared/linyy/ribo_GSE114882/03.filter
+fastaFile=/data-shared/linyy/ribo_GSE114882/02.cutadapt
+
+for i in SRR7214{386..401};
+do
+    nohup fastq_quality_filter -Q33 -v -q 25 -p 75 -i $fastaFile/$i.trimmed.fastq -o $workdir/$i.trimmed.Qfilter.fastq > $workdir/$i.Qfilter.log &
 done
 ```

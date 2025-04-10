@@ -6,7 +6,7 @@ The three tumultuous years of my master's program are coming to an end, and the 
 So far, the data analysis I have been involved in has primarily focused on translation regulation using ribosome profiling technology. Additionally, I have also completed data analysis for RNA-seq, scRNA-seq, and PAR-CLIP seq, but these analyses were not particularly in-depth.
 
 ## **Project**
-1. [Ribo-seq data analysis](https://github.com/Zheyu-Ding/NGS_data_analysis_note/blob/master/Projects/Ribo-seq.md)
+1. [Ribo-seq data analysis](https://github.com/Zheyu-Ding/NGS_data_analysis_note/blob/main/Projects/Ribo-seq.md)
 2. RNA-seq data analysis
 3. PAR-CLIP seq data analysis
 4. scRNA-seq data analysis
