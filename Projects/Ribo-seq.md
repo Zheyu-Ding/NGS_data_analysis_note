@@ -100,9 +100,9 @@ workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
 
 for i in SRR7214{386..401};
 do
-    nohup samtools sort -T $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam.temp \
-    -o $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam \
-    $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.bam &
+        nohup samtools sort -T $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam.temp \
+        -o $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam \
+        $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.bam &
 done
 
 ## set index
@@ -110,8 +110,8 @@ workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
 
 for i in SRR7214{386..401};
 do
-    nohup samtools index $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam &
-    nohup samtools index $workdir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam &
+        nohup samtools index $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam &
+        nohup samtools index $workdir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam &
 done
 
 ## bam2bigwig
@@ -119,7 +119,62 @@ workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
 
 for i in SRR7214{386..401};
 do
-    nohup bamCoverage -b $workdir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam \
-    -o $workdir/${i}_STAR/$i.bw  --normalizeUsing CPM --binSize 1 -p 1 > $workdir/${i}_STAR/$i.bam2bw.log 2>&1 &
+        nohup bamCoverage -b $workdir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam \
+        -o $workdir/${i}_STAR/$i.bw  --normalizeUsing CPM --binSize 1 -p 1 > $workdir/${i}_STAR/$i.bam2bw.log 2>&1 &
+done
+```
+
+### **08.periodicity, post mapping check**
+
+```
+workdir=/data-shared/linyy/ribo_GSE114882/08.periodicity
+BamDir=/data-shared/linyy/ribo_GSE114882/07.STAR
+RiboCode_annot=/data-shared/linyy/reference/hg38/RiboCode_annot_hg38/RiboCode_annot
+
+for i in SRR7214{386..401};
+do
+        metaplots -a $RiboCode_annot -r $BamDir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam -o $workdir/$i -m 20 -M 40
+done
+```
+
+### **09.ReadLengthDistribution, post mapping check**
+
+```
+workdir=/data-shared/linyy/ribo_GSE114882/09.ReadLengthDistribution
+BamDir=/data-shared/linyy/ribo_GSE114882/07.STAR
+
+for i in SRR7214{386..401};
+do
+        nohup LengthDistribution -i $BamDir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam -o $workdir/$i -f bam > $workdir/$i_reads_length.log 2>&1 &
+done
+```
+
+### **10.read count**
+
+```
+BamDir=/data-shared/linyy/ribo_GSE114882/07.STAR
+workdir=/data-shared/linyy/ribo_GSE114882/10.read_counts
+
+for i in SRR7214{386..401};
+do
+        nohup ModifyHTseq -i $BamDir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam \
+        -g /data-shared/linyy/reference/hg38/ensembl/Homo_sapiens.GRCh38.109.chr.gtf \
+        -o $workdir/$i.counts \
+        -m union -q 10 --minLen 25 --maxLen 35 --exclude-first 45 --exclude-last 15 \
+        -t CDS --id-type gene_name > $workdir/$i.counts.log 2>&1 &
+done
+```
+
+### **11.RPF statistics**
+
+```
+BamDir=/data-shared/linyy/ribo_GSE114882/07.STAR
+workdir=/data-shared/linyy/ribo_GSE114882/11.RPF_statistics
+
+for i in SRR7214{386..401};
+do
+        nohup StatisticReadsOnDNAsContam -i $BamDir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam \
+        -g /data-shared/linyy/reference/hg38/ensembl/Homo_sapiens.GRCh38.109.chr.gtf \
+        -o $workdir/$i > $workdir/$i.statistics.log 2>&1 &
 done
 ```
