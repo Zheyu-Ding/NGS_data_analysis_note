@@ -6,6 +6,7 @@
 - More information about ribosome profiling you can read [my review](https://academic.oup.com/bib/article/26/1/bbae641/7922579?login=false).
 
 ## **Upstream Workflow of Ribosome Profiling Data**
+![Ribosome profiling data analysis](./Figures/fig3.tif "Overview")
 ### **00.rawdata, download**
 
 ```
