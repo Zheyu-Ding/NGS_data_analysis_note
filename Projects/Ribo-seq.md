@@ -182,3 +182,12 @@ do
         -o $workdir/$i > $workdir/$i.statistics.log 2>&1 &
 done
 ```
+
+## **Post mapping quality control**
+Quality-controlled ribosome profiling data should meet the following basic characteristics:
+- Enrichment in coding sequences (CDS)
+- 3-nucleotide periodicity
+- Presence of peaks at the start and stop codons (not mandatory, but commonly observed)
+- Normal fragment length distribution — around 28–30 nucleotides for RNase I digestion and about 35 nucleotides for MNase digestion.
+- For example, 
+![Post mapping quality control](./Figures/fig2.png "Post mapping quality control")
