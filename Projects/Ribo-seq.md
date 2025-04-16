@@ -5,8 +5,11 @@
 - The basic principle of Ribo-seq is the selective isolation and sequencing of ribosome-protected mRNA fragments, known as ribosome-protected fragments (RPFs). RPFs represent the positions of actively translating ribosomes on the transcriptome.
 - More information about ribosome profiling you can read [my review](https://academic.oup.com/bib/article/26/1/bbae641/7922579?login=false).
 
+## **An Overview of Ribosome Profiling Data Analysis**
+
+![Ribosome profiling data analysis](./Figures/DA_new.png "An Overview of Ribosome Profiling Data Analysis")
+
 ## **Upstream Workflow of Ribosome Profiling Data**
-![Ribosome profiling data analysis](./Figures/fig3.tif "Overview")
 ### **00.rawdata, download**
 
 ```
