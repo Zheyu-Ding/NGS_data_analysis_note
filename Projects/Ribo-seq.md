@@ -195,5 +195,20 @@ Quality-controlled ribosome profiling data should meet the following basic chara
 ## **Downstream Workflow of Ribosome Profiling Data**
 As shown in the figure in the "An Overview of Ribosome Profiling Data Analysis" section, the significance of ribosome profiling can be broadly classified into three categories, corresponding to the three parts of downstream analysis.
 - Differential analysis
+Differential analysis mainly includes RPF-level analysis and translation efficiency (TE) level analysis in combination with RNA-seq data.
+
 - Annotating translating sequences
+Annotating translating sequences mainly involves identifying translating ORF sequences and discovering new translation initiation sites. 
+ORF calling script:
+
+```
+nohup RiboCode -a /data-shared/linyy/reference/hg38/RiboCode_annot_hg38 -c humanriboliteMerge.txt  -l no -g -o humanribo &
+```
+
 - Monitoring translation process
+Monitoring the translation process mainly includes metagene analysis and other methods. 
+Metagene analysis script: 
+
+```
+MetageneAnalysis -f configure.txt -c /data-shared/linyy/reference/hg38/RiboCode_annot_hg38/longest.transcripts.info.txt -o ribo -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS --id-type transcript_id 
+```
