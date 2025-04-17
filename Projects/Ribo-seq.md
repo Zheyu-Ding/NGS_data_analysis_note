@@ -191,3 +191,9 @@ Quality-controlled ribosome profiling data should meet the following basic chara
 - Normal fragment length distribution — around 28–30 nucleotides for RNase I digestion and about 35 nucleotides for MNase digestion.
 - For example, 
 ![Post mapping quality control](./Figures/fig2.png "Post mapping quality control")
+
+## **Downstream Workflow of Ribosome Profiling Data**
+As shown in the figure in the "An Overview of Ribosome Profiling Data Analysis" section, the significance of ribosome profiling can be broadly classified into three categories, corresponding to the three parts of downstream analysis.
+- Differential analysis
+- Annotating translating sequences
+- Monitoring translation process
