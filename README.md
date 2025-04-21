@@ -8,7 +8,7 @@
 ## **Design**
 &emsp;&emsp;So far, the data analysis I have been involved in has primarily focused on translation regulation using [ribosome profiling](https://en.wikipedia.org/wiki/Ribosome_profiling) technology. Additionally, I have also completed data analysis for RNA-seq, scRNA-seq, and PAR-CLIP seq, but these analyses were not particularly in-depth.
 
-## **Project**
+## **Projects**
 1. [Ribo-seq data analysis](https://github.com/Zheyu-Ding/NGS_data_analysis_note/blob/main/Projects/Ribo-seq.md)
 2. RNA-seq data analysis
 3. PAR-CLIP seq data analysis
