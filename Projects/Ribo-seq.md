@@ -16,7 +16,7 @@
 ## activate your ribo-seq data analysis environment
 conda activate ribo
 ## download raw date via fastq-dump
-nohup fastq-dump --gzip --split-3 --defline-qual '+' --defline-seq '@\$ac-\$si/\$ri'   SRR9047189 &
+nohup fastq-dump --gzip --split-3 --defline-qual '+' --defline-seq '@\$ac-\$si/\$ri'   SRR9047190 &
 ## check data integrity
 cat nohup.out | grep Written
 ```
@@ -34,7 +34,7 @@ workdir=/data-shared/linyy/ribo_GSE114882/02.cutadapt
 fastaFile=/data-shared/linyy/ribo_GSE114882/00.raw
 adapter=AGATCGGAAGAGCACACGTCT 
 
-for i in SRR7214{386..401}; 
+for i in SRR9047{190..195}; 
 do
         nohup cutadapt -m 20 -M 40 --match-read-wildcards -a $adapter -o $workdir/$i.trimmed.fastq $fastaFile/$i.fastq.gz > $workdir/${i}_trimmed.log &
 done
@@ -46,7 +46,7 @@ done
 workdir=/data-shared/linyy/ribo_GSE114882/03.filter
 fastaFile=/data-shared/linyy/ribo_GSE114882/02.cutadapt
 
-for i in SRR7214{386..401};
+for i in SRR9047{190..195};
 do
         nohup fastq_quality_filter -Q33 -v -q 25 -p 75 -i $fastaFile/$i.trimmed.fastq -o $workdir/$i.trimmed.Qfilter.fastq > $workdir/$i.Qfilter.log &
 done
@@ -65,7 +65,7 @@ bowtie_noncoding_index=/data-shared/linyy/reference/hg38/rRNA_bowtieIndex/human_
 fastqFile=/data-shared/linyy/ribo_GSE114882/03.filter
 workdir=/data-shared/linyy/ribo_GSE114882/05.contam
 
-for i in SRR7214{386..401};
+for i in SRR9047{190..195};
 do
       nohup bowtie -n 0 -y -a --norc --best --strata -S -p 1 -l 15 --un=$workdir/noncontam_$i.fastq \
       -x $bowtie_noncoding_index -q $fastqFile/$i.trimmed.Qfilter.fastq $workdir/$i.alin > $i.log 2>&1 &
@@ -85,7 +85,7 @@ STAR_genome_index=/data-shared/linyy/reference/hg38/STAR_Human_Ensembl_hg38_39
 workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
 fastqFile=/data-shared/linyy/ribo_GSE114882/00.raw
 
-for i in SRR7214{386..401};
+for i in SRR9047{190..195};
 do
     mkdir -p $workdir/${i}_STAR
     nohup STAR --outFilterType Normal --outWigNorm RPM --outWigStrand Stranded  \
@@ -102,7 +102,7 @@ done
 ## sort only transcriptome.out.bam
 workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
 
-for i in SRR7214{386..401};
+for i in SRR9047{190..195};
 do
         nohup samtools sort -T $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam.temp \
         -o $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam \
@@ -112,7 +112,7 @@ done
 ## set index
 workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
 
-for i in SRR7214{386..401};
+for i in SRR9047{190..195};
 do
         nohup samtools index $workdir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam &
         nohup samtools index $workdir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam &
@@ -121,7 +121,7 @@ done
 ## bam2bigwig
 workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
 
-for i in SRR7214{386..401};
+for i in SRR9047{190..195};
 do
         nohup bamCoverage -b $workdir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam \
         -o $workdir/${i}_STAR/$i.bw  --normalizeUsing CPM --binSize 1 -p 1 > $workdir/${i}_STAR/$i.bam2bw.log 2>&1 &
@@ -135,7 +135,7 @@ workdir=/data-shared/linyy/ribo_GSE114882/08.periodicity
 BamDir=/data-shared/linyy/ribo_GSE114882/07.STAR
 RiboCode_annot=/data-shared/linyy/reference/hg38/RiboCode_annot_hg38/RiboCode_annot
 
-for i in SRR7214{386..401};
+for i in SRR9047{190..195};
 do
         metaplots -a $RiboCode_annot -r $BamDir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam -o $workdir/$i -m 20 -M 40
 done
@@ -147,7 +147,7 @@ done
 workdir=/data-shared/linyy/ribo_GSE114882/09.ReadLengthDistribution
 BamDir=/data-shared/linyy/ribo_GSE114882/07.STAR
 
-for i in SRR7214{386..401};
+for i in SRR9047{190..195};
 do
         nohup LengthDistribution -i $BamDir/${i}_STAR/$i.Aligned.toTranscriptome.out.sorted.bam -o $workdir/$i -f bam > $workdir/$i_reads_length.log 2>&1 &
 done
@@ -159,7 +159,7 @@ done
 BamDir=/data-shared/linyy/ribo_GSE114882/07.STAR
 workdir=/data-shared/linyy/ribo_GSE114882/10.read_counts
 
-for i in SRR7214{386..401};
+for i in SRR9047{190..195};
 do
         nohup ModifyHTseq -i $BamDir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam \
         -g /data-shared/linyy/reference/hg38/ensembl/Homo_sapiens.GRCh38.109.chr.gtf \
@@ -175,7 +175,7 @@ done
 BamDir=/data-shared/linyy/ribo_GSE114882/07.STAR
 workdir=/data-shared/linyy/ribo_GSE114882/11.RPF_statistics
 
-for i in SRR7214{386..401};
+for i in SRR9047{190..195};
 do
         nohup StatisticReadsOnDNAsContam -i $BamDir/${i}_STAR/$i.Aligned.sortedByCoord.out.bam \
         -g /data-shared/linyy/reference/hg38/ensembl/Homo_sapiens.GRCh38.109.chr.gtf \
