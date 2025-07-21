@@ -83,7 +83,7 @@ ls 05.contam/*.fastq | xargs fastqc -t 12 -o 06.finalqc
 ```
 STAR_genome_index=/data-shared/linyy/reference/hg38/STAR_Human_Ensembl_hg38_39
 workdir=/data-shared/linyy/ribo_GSE114882/07.STAR
-fastqFile=/data-shared/linyy/ribo_GSE114882/00.raw
+fastqFile=/data-shared/linyy/ribo_GSE114882/05.contam
 
 for i in SRR9047{190..195};
 do
@@ -93,7 +93,7 @@ do
             --outFilterMismatchNmax 2 --outFilterMultimapNmax 20 \
             --outFilterMatchNmin 15 --outFilterMismatchNoverReadLmax 0.04 \
             --genomeDir $STAR_genome_index \
-            --readFilesIn $fastqFile/$i.fastq.gz \
+            --readFilesIn $fastqFile/noncontam_$i.fastq \
             --outFileNamePrefix  $workdir/${i}_STAR/${i}. \
             --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM GeneCounts \
             --outSAMattributes All  --limitBAMsortRAM 5838160191 --readFilesCommand zcat &
